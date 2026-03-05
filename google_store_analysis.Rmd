@@ -1,0 +1,73 @@
+---
+title: "E-Commerce Analysis Google Store"
+author: "Francesca Monte"
+date: "2026-03-05"
+output: html_document
+---
+
+```{r setup, message=FALSE}
+# install packages
+install.packages("tidyverse")
+install.packages("janitor")
+install.packages("skimr")
+# download packages
+library(tidyverse)
+library(janitor)
+library(skimr)
+
+# download data 
+df_google <- read_csv("google_analytics_data.csv")
+
+# clean column names
+df_google <- df_google %>% 
+  clean_names()
+
+# let's start initial screening
+df_google %>% skim_without_charts()
+
+```{r pulizia}
+df_final <- df_google %>%
+  
+# Transforming null values (na) in zeros to make calculations
+  mutate(revenue_usd = replace_na(revenue_usd, 0),
+         transactions = replace_na(transactions, 0)) %>%
+  
+# Creating a column that instantly tells if a user is a "Buyer"
+  mutate(is_buyer = transactions > 0)
+
+# Let's verify the result
+df_final %>% 
+  group_by(is_buyer) %>% 
+  summarise(conteggio = n(), incasso_totale = sum(revenue_usd))
+
+```{r grafico_browser}
+# Creating a dataset summary for the chart
+browser_analysis <- df_final %>%
+  filter(is_buyer == TRUE) %>%       # analysing only those who actually bought something
+  group_by(browser) %>%
+  summarise(totale_revenue = sum(revenue_usd)) %>%
+  arrange(desc(totale_revenue)) %>%
+  slice_max(totale_revenue, n = 5)   # keeping just the first 5 browser to avoid chart confusion
+
+# first chart
+ggplot(data = browser_analysis) +
+  geom_col(mapping = aes(x = reorder(browser, totale_revenue), y = totale_revenue), fill = "steelblue") +
+  coord_flip() +    # rotating the chart to read browser names better
+  labs(title = "Top 5 Browser per Total Revenue",
+       subtitle = "Data from Google Merchandise Store",
+       x = "Browser",
+       y = "Total revenue (USD)") +
+  theme_minimal()   # clean elegant theme
+
+
+
+
+```
+
+### Conclusions on Browser Analysis
+
+The revenue analysis shows a huge domination of **Chrome**. 
+Even though Safari and Firefox contributes to traffic volume, their revenue is marginal. 
+This suggests a strong correlation between the Google ecosystem and the propension to buy from it in their official store.
+
+
