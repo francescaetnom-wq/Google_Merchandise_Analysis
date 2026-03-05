@@ -27,6 +27,7 @@ Refinement: Filtered out low-traffic browsers to avoid statistical noise in the 
 Design: Developed a horizontal bar chart using coord_flip() and theme_minimal() for executive-level readability.
 Ranking: Used reorder() to rank browsers by financial impact rather than alphabetical order, making the "Chrome dominance" immediately apparent to stakeholders.
 
+[ 👉 Click here to visualize the report](http://www.francescaetnom.com/Google_Merchandise_Analysis/google_store_analysis.html)
 # 💡Key Business Insights
 Browser Monoculture: Chrome accounts for the overwhelming majority of total revenue, suggesting the store's UX is highly optimized for the Google ecosystem.
 ROI Strategy: Future development and A/B testing should prioritize Chrome and Safari, as other browsers show marginal financial contribution despite existing traffic.
